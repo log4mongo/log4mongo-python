@@ -1,7 +1,6 @@
 import unittest
 import logging
 from log4mongo.handlers import MongoHandler
-from pymongo import Connection
 
 class TestMongoHandler(unittest.TestCase):
 
