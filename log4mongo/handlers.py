@@ -54,6 +54,15 @@ class MongoHandler(logging.Handler):
             self.authenticated = self.db.authenticate(self.username, self.password)
         self.collection = self.db[self.collectionName]
 
+    def getConnection(self):
+        return self.connection
+
+    def getDatabase(self):
+        return self.db
+
+    def getCollection(self):
+        return self.collection
+
 
     def close(self):
         if self.authenticated is True:
