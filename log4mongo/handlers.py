@@ -27,8 +27,6 @@ class MongoFormatter(logging.Formatter):
         return document
 
 
-
-
 class MongoHandler(logging.Handler):
 
     def __init__(self, level=logging.NOTSET, host='localhost', port=27017, database_name='logging4mongo', collection='logs', username=None, password=None):
