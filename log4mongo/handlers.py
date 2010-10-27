@@ -5,8 +5,8 @@ from pymongo import Connection
 """
 // Format of LogRecord (for exception):
 // {
-//    "_id": MongoId
-//    "timestamp": MongoDate,
+//    "_id": bson.objectid.ObjectId
+//    "timestamp": bson.timestamp.Timestamp,
 //    "level":"ERROR",
 //    "thread":"2556",
 //    "message":"testmessage",

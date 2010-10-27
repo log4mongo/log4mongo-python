@@ -3,7 +3,6 @@ import logging
 from log4mongo.handlers import MongoHandler
 
 class TestMongoHandler(unittest.TestCase):
-
     db_name = 'logging4mongo_test'
     cl_name = 'logs_test'
 
