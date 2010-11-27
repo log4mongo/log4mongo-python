@@ -10,7 +10,7 @@ Requirements
 - pymongo
 - MongoDB
 
-- tested against python 2.6.6, MongoDB 1.6.3, pymongo 1.9
+- tested against python 2.6.6, MongoDB 1.6.4, pymongo 1.9
 
 Configuration
 -------------

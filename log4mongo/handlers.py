@@ -4,22 +4,24 @@ from pymongo import Connection
 
 """
 // Format of LogRecord (for exception):
-// {
-//    "_id": bson.objectid.ObjectId
-//    "timestamp": bson.timestamp.Timestamp,
-//    "level":"ERROR",
-//    "thread":"2556",
-//    "message":"testmessage",
-//    "fileName":"NA",
-//    "method":"test",
-//    "lineNumber":"NA",
-//    "className":"LogRecord",
-//    "exception":{
-//        "message":"exception2",
-//        "code":0,
-//        "stackTrace":"stackTrace of Exception",
-//    }
-// }
+ {
+  'lineNumber': 38,
+  'exception': {
+                'stactTrace': 'Traceback (most recent call last):
+                               File "/var/projects/python/log4mongo-python/tests/test_mongo_handler.py", line 36, in test_emit_exception
+                               raise Exception(\'exc1\')
+                               Exception: exc1',
+                'message': 'exc1',
+                'code': 0
+               },
+  'thread': -1216977216,
+  'level': 'ERROR',
+  'timestamp': Timestamp(1290895671, 63),
+  'message': 'test message',
+  'fileName': '/var/projects/python/log4mongo-python/tests/test_mongo_handler.py',
+  'method': 'test_emit_exception',
+  'loggerName': 'testLogger'
+}
 """
 class MongoFormatter(logging.Formatter):
     """
@@ -27,22 +29,22 @@ class MongoFormatter(logging.Formatter):
     """
     def format(self, record):
         document = {
-            u'timestamp'  : Timestamp(int(record.created), int(record.msecs)),
-            u'level'      : record.levelname,
-            u'thread'     : record.thread,
-            u'message'    : record.getMessage(),
-            u'fileName'   : record.pathname,
-            u'method'     : record.funcName,
-            u'lineNumber' : record.lineno,
-            u'className'  : record.__class__.__name__
+            'timestamp'  : Timestamp(int(record.created), int(record.msecs)),
+            'level'      : record.levelname,
+            'thread'     : record.thread,
+            'message'    : record.getMessage(),
+            'loggerName' : record.name,
+            'fileName'   : record.pathname,
+            'method'     : record.funcName,
+            'lineNumber' : record.lineno
         }
 
         if record.exc_info is not None:
             document.update({
-                u'exception' : {
-                    u'message'    : str(record.exc_info[1]),
-                    u'code'       : 0,
-                    u'stactTrace' : self.formatException(record.exc_info)
+                'exception' : {
+                    'message'    : str(record.exc_info[1]),
+                    'code'       : 0,
+                    'stactTrace' : self.formatException(record.exc_info)
                 }
             })
 
