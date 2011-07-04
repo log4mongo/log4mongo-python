@@ -16,7 +16,7 @@ setup(
     description='handler for MongoDB database for python logging',
     long_description=read('README'),
     author='Vladimir Gorej',
-    author_email='gorej@mortality.sk',
+    author_email='gorej@codescale.net',
     url='http://log4mongo.org/display/PUB/Log4mongo+for+Python',
     license='BSD',
     keywords = "mongodb mongo logging handler",

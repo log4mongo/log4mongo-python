@@ -4,3 +4,7 @@
 *.swp
 *.swo
 *.swn
+# Emacs backup files & locks
+*~
+\#*
+.\#*

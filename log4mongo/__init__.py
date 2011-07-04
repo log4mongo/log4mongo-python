@@ -1,2 +1,2 @@
-__author__ = 'Vladimir Gorej <gorej@mortality.s>'
-__version__ = '1.0rc2'
+__author__ = 'Vladimir Gorej <gorej@codescale.net>'
+__version__ = '1.0'
