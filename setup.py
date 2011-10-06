@@ -14,7 +14,7 @@ setup(
     name='log4mongo',
     version=log4mongo.__version__,
     description='handler for MongoDB database for python logging',
-    long_description=read('README'),
+    long_description=read('README.rst'),
     author='Vladimir Gorej',
     author_email='gorej@codescale.net',
     url='http://log4mongo.org/display/PUB/Log4mongo+for+Python',
