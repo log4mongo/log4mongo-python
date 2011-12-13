@@ -9,7 +9,7 @@ Requirements
 
 - python 2.7+
 - pymongo
-- MongoDB
+- mongo database
 
 For more information see *debian_requirements.txt* and *requirements.txt* files.
 
@@ -63,6 +63,8 @@ Tests
 
 - Xubuntu Linux 11.10 oneiric 64-bit
 - python 2.7.1+
+- pymongo 2.1
+- mongod - db version v1.8.2, pdfile version 4.5
 - python unittest
 
 **Running tests**
