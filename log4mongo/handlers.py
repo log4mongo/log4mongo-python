@@ -5,23 +5,23 @@ import logging
 
 """
 // Format of LogRecord (for example):
- {
-  'lineNumber': 38,
-  'exception': {
-                'stackTrace': 'Traceback (most recent call last):
-                               File "/var/projects/python/log4mongo-python/tests/test_mongo_handler.py", line 36, in test_emit_exception
-                               raise Exception(\'exc1\')
-                               Exception: exc1',
-                'message': 'exc1',
-                'code': 0
-               },
-  'thread': -1216977216,
-  'level': 'ERROR',
-  'timestamp': Timestamp(1290895671, 63),
-  'message': 'test message',
-  'fileName': '/var/projects/python/log4mongo-python/tests/test_mongo_handler.py',
-  'method': 'test_emit_exception',
-  'loggerName': 'testLogger'
+{
+    'thread': -1216977216,
+    'level': 'ERROR',
+    'timestamp': Timestamp(1290895671, 63),
+    'message': 'test message',
+    'fileName': '/var/projects/python/log4mongo-python/tests/test_mongo_handler.py',
+    'lineNumber': 38,
+    'method': 'test_emit_exception',
+    'loggerName': 'testLogger',
+    'exception': {
+        'stackTrace': 'Traceback (most recent call last):
+                       File "/var/projects/python/log4mongo-python/tests/test_mongo_handler.py", line 36, in test_emit_exception
+                       raise Exception(\'exc1\')
+                       Exception: exc1',
+        'message': 'exc1',
+        'code': 0
+    }
 }
 """
 
@@ -95,7 +95,7 @@ class MongoHandler(logging.Handler):
 
     def close(self):
         """If authenticated, logging out and closing mongo database connection."""
-        if self.authenticated is True:
+        if self.authenticated:
             self.db.logout()
         if self.connection is not None:
             self.connection.disconnect()

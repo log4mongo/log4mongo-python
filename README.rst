@@ -37,6 +37,11 @@ Tests
 
 **Running tests**
 
+Before you run the test you must start mongo database. You will do so by this command: ::
+
+ $ mongod --dbpath /tmp/
+
+
 To run the test run command: ::
 
  $ python test.py
