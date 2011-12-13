@@ -21,5 +21,6 @@ setup(
     license='BSD',
     keywords = "mongodb mongo logging handler",
     install_requires=['pymongo'],
-    packages=['log4mongo']
+    packages=['log4mongo'],
+    test_suite='log4mongo.test'
 )
