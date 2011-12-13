@@ -1,6 +1,6 @@
 log4mongo-python
 ================
-log4mongo-python is handler for MongoDB database for python logging, part of log4mongo.org project.
+log4mongo-python is mongo database handler for python logging, part of log4mongo.org project.
 log4mongo-python is using pymongo driver - http://github.com/mongodb/mongo-python-driver
 
 
