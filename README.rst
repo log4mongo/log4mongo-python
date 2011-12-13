@@ -1,43 +1,47 @@
 log4mongo-python
-----------------
+================
 log4mongo-python is handler for MongoDB database for python logging, part of log4mongo.org project.
 log4mongo-python is using pymongo driver - http://github.com/mongodb/mongo-python-driver
+
 
 Requirements
 ------------
 
-- python
+- python 2.7+
 - pymongo
 - MongoDB
 
-Tested against python 2.6.6+, MongoDB 1.6.4+, pymongo 1.9+
-
-Configuration
-log4mongo-python
-----------------
-log4mongo-python is handler for MongoDB database for python logging, part of log4mongo.org project.
-log4mongo-python is using pymongo driver - http://github.com/mongodb/mongo-python-driver
-
-Requirements
-------------
-
-- python
-- pymongo
-- MongoDB
-
-Tested against python 2.6.6+, MongoDB 1.6.4+, pymongo 1.9+
+For more information see *debian_requirements.txt* and *requirements.txt* files.
 
 Configuration
 -------------
 
 Example handler python configuration: ::
- 
+
  import logging
  from log4mongo.handlers import MongoHandler
 
  logger = logging.getLogger('test')
  logger.addHandler(MongoHandler(host='localhost'))
  logger.warning('test')
+
+
+Tests
+-----
+
+**Tested on evnironment**
+
+- Xubuntu Linux 11.10 oneiric 64-bit
+- python 2.7.1+
+- python unittest
+
+**Running tests**
+
+To run the test run command: ::
+
+ $ python test.py
+ $ python setup.py test
+
 
 Author
 ------
