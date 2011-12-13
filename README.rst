@@ -26,6 +26,36 @@ Example handler python configuration: ::
  logger.warning('test')
 
 
+Contextual information
+----------------------
+
+It is possible to decorate you document with contextual information. There are tow approaches.
+
+**1.) approach**
+::
+
+ import logging
+ from log4mongo.handlers import MongoHandler
+
+ handler = MongoHandler(host='localhost')
+ logger = logging.getLogger('test')
+ logger.addHandler(handler)
+ logging.LoggerAdapter(logger, {'ip': '127.0.0.1'}).info('test')
+
+**2.) approach**
+::
+
+ import logging
+ from log4mongo.handlers import MongoHandler
+
+ handler = MongoHandler(host='localhost')
+ logger = logging.getLogger('test')
+ logger.addHandler(handler)
+ logger.info('test', extra={'ip': '127.0.0.1'})
+
+
+As you can see, second approach is more straightforward and there is no need to use LoggerAdapter.
+
 Tests
 -----
 

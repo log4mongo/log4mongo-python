@@ -4,7 +4,7 @@ from pymongo.errors import AutoReconnect
 import logging
 
 """
-// Format of LogRecord (for example):
+Example format of generated bson document:
 {
     'thread': -1216977216,
     'level': 'ERROR',
@@ -13,7 +13,7 @@ import logging
     'fileName': '/var/projects/python/log4mongo-python/tests/test_mongo_handler.py',
     'lineNumber': 38,
     'method': 'test_emit_exception',
-    'loggerName': 'testLogger',
+    'loggerName':  'testLogger',
     'exception': {
         'stackTrace': 'Traceback (most recent call last):
                        File "/var/projects/python/log4mongo-python/tests/test_mongo_handler.py", line 36, in test_emit_exception
@@ -25,11 +25,15 @@ import logging
 }
 """
 
+logging.LogRecord
 
 class MongoFormatter(logging.Formatter):
-    """Formats LogRecord into python dictionary."""
+
+    DEFAULT_PROPERTIES = logging.LogRecord('', '', '', '','', '', '', '').__dict__.keys()
 
     def format(self, record):
+        """Formats LogRecord into python dictionary."""
+        # Standard document
         document = {
             'timestamp': Timestamp(int(record.created), int(record.msecs)),
             'level': record.levelname,
@@ -40,7 +44,7 @@ class MongoFormatter(logging.Formatter):
             'method': record.funcName,
             'lineNumber': record.lineno
         }
-
+        # Standard document decorated with exception info
         if record.exc_info is not None:
             document.update({
                 'exception': {
@@ -49,15 +53,20 @@ class MongoFormatter(logging.Formatter):
                     'stackTrace': self.formatException(record.exc_info)
                 }
             })
-
+        # Standard document decorated with extra contextual information
+        if len(self.DEFAULT_PROPERTIES) != len(record.__dict__):
+            contextual_extra = set(record.__dict__).difference(set(self.DEFAULT_PROPERTIES))
+            if contextual_extra:
+                for key in contextual_extra:
+                    document[key] = record.__dict__[key]
         return document
 
 
 class MongoHandler(logging.Handler):
-    """Setting up mongo handler, initializing mongo database connection via pymongo."""
 
     def __init__(self, level=logging.NOTSET, host='localhost', port=27017, database_name='logs', collection='logs',
-                 username=None, password=None, fail_silently=False):
+                 username=None, password=None, fail_silently=False, formatter=None):
+        """Setting up mongo handler, initializing mongo database connection via pymongo."""
         logging.Handler.__init__(self, level)
         self.host = host
         self.port = port
@@ -66,14 +75,11 @@ class MongoHandler(logging.Handler):
         self.username = username
         self.password = password
         self.fail_silently = fail_silently
-
         self.connection = None
         self.db = None
         self.collection = None
         self.authenticated = False
-
-        self.formatter = MongoFormatter()
-
+        self.formatter = formatter or MongoFormatter()
         self._connect()
 
     def _connect(self):
@@ -91,7 +97,6 @@ class MongoHandler(logging.Handler):
         if self.username is not None and self.password is not None:
             self.authenticated = self.db.authenticate(self.username, self.password)
         self.collection = self.db[self.collection_name]
-
 
     def close(self):
         """If authenticated, logging out and closing mongo database connection."""
