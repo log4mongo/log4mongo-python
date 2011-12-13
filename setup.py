@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from setuptools import setup
 import log4mongo
 import os
@@ -13,14 +14,29 @@ def read(fname):
 setup(
     name='log4mongo',
     version=log4mongo.__version__,
-    description='handler for MongoDB database for python logging',
+    description='mongo database handler for python logging',
     long_description=read('README.rst'),
-    author='Vladimir Gorej',
+    author=u'Vladimír Gorej',
     author_email='gorej@codescale.net',
     url='http://log4mongo.org/display/PUB/Log4mongo+for+Python',
+    download_url='http://github.com/log4mongo/log4mongo-python/tarball/master',
     license='BSD',
     keywords = "mongodb mongo logging handler",
     install_requires=['pymongo'],
-    packages=['log4mongo'],
-    test_suite='log4mongo.test'
+    packages=['log4mongo', 'log4mongo.test'],
+    platforms='any',
+    classifiers=[
+        'Development Status :: 4 - Beta',
+        'Environment :: Console',
+        'Environment :: Web Environment',
+        'Intended Audience :: Developers',
+        'Intended Audience :: System Administrators',
+        'License :: OSI Approved :: BSD License',
+        'Operating System :: OS Independent',
+        'Programming Language :: Python',
+        'Topic :: Utilities',
+        'Topic :: System :: Logging',
+        'Topic :: System :: Monitoring'
+    ],
+    test_suite='log4mongo.test',
 )
