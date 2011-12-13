@@ -1,15 +1,14 @@
-import logging
 from bson.timestamp import Timestamp
 from pymongo import Connection
 from pymongo.errors import AutoReconnect
-
+import logging
 
 """
-// Format of LogRecord (for exception):
+// Format of LogRecord (for example):
  {
   'lineNumber': 38,
   'exception': {
-                'stactTrace': 'Traceback (most recent call last):
+                'stackTrace': 'Traceback (most recent call last):
                                File "/var/projects/python/log4mongo-python/tests/test_mongo_handler.py", line 36, in test_emit_exception
                                raise Exception(\'exc1\')
                                Exception: exc1',
@@ -25,10 +24,10 @@ from pymongo.errors import AutoReconnect
   'loggerName': 'testLogger'
 }
 """
+
+
 class MongoFormatter(logging.Formatter):
-    """
-    formats LogRecord into python dictionary
-    """
+    """Formats LogRecord into python dictionary."""
 
     def format(self, record):
         document = {
@@ -47,7 +46,7 @@ class MongoFormatter(logging.Formatter):
                 'exception': {
                     'message': str(record.exc_info[1]),
                     'code': 0,
-                    'stactTrace': self.formatException(record.exc_info)
+                    'stackTrace': self.formatException(record.exc_info)
                 }
             })
 
@@ -55,10 +54,7 @@ class MongoFormatter(logging.Formatter):
 
 
 class MongoHandler(logging.Handler):
-    """
-    Setting up mongo handler,
-    initializing mongodb connection via pymongo
-    """
+    """Setting up mongo handler, initializing mongo database connection via pymongo."""
 
     def __init__(self, level=logging.NOTSET, host='localhost', port=27017, database_name='logs', collection='logs',
                  username=None, password=None, fail_silently=False):
@@ -80,11 +76,9 @@ class MongoHandler(logging.Handler):
 
         self._connect()
 
-    """
-    connecting to mongo databse
-    """
-
     def _connect(self):
+        """Connecting to mongo database."""
+
         try:
             self.connection = Connection(host=self.host, port=self.port)
         except AutoReconnect, e:
@@ -99,26 +93,18 @@ class MongoHandler(logging.Handler):
         self.collection = self.db[self.collection_name]
 
 
-    """
-    if authenticated, logging out and closing mongodb connection
-    """
-
     def close(self):
+        """If authenticated, logging out and closing mongo database connection."""
         if self.authenticated is True:
             self.db.logout()
         if self.connection is not None:
             self.connection.disconnect()
 
-    """
-    inserting new logging record to mongo database
-    """
-
     def emit(self, record):
+        """Inserting new logging record to mongo database."""
         if self.collection is not None:
             try:
                 self.collection.save(self.format(record))
-            except Exception, e:
-                if self.fail_silently:
-                    pass
-                else:
+            except Exception:
+                if not self.fail_silently:
                     self.handleError(record)
