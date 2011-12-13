@@ -1,3 +1,4 @@
 include README
 include LICENSE
 include requirements.txt
+include debian_requirements.txt
