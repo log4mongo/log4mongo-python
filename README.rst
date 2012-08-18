@@ -24,7 +24,6 @@ Example handler python configuration: ::
  logger = logging.getLogger('test')
  logger.addHandler(MongoHandler(host='localhost'))
  logger.warning('test')
- logger.setLevel( logging.INFO )
 
 
 Contextual information
@@ -62,10 +61,10 @@ Tests
 
 **Tested on evnironment**
 
-- Xubuntu Linux 11.10 oneiric 64-bit
-- python 2.7.1+
+- Xubuntu Linux Ubuntu 12.04.1 LTS precise 64-bit
+- python 2.7.3+
 - pymongo 2.1
-- mongod - db version v1.8.2, pdfile version 4.5
+- mongod - db version v2.0.4, pdfile version 4.5
 - python unittest
 
 **Running tests**
