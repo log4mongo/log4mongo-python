@@ -1,6 +1,7 @@
 from bson.timestamp import Timestamp
 from pymongo import Connection
-from pymongo.errors import AutoReconnect
+from pymongo.collection import Collection
+from pymongo.errors import AutoReconnect, OperationFailure
 import logging
 
 """
@@ -29,7 +30,7 @@ logging.LogRecord
 
 class MongoFormatter(logging.Formatter):
 
-    DEFAULT_PROPERTIES = logging.LogRecord('', '', '', '','', '', '', '').__dict__.keys()
+    DEFAULT_PROPERTIES = logging.LogRecord('', '', '', '', '', '', '', '').__dict__.keys()
 
     def format(self, record):
         """Formats LogRecord into python dictionary."""
@@ -65,7 +66,7 @@ class MongoFormatter(logging.Formatter):
 class MongoHandler(logging.Handler):
 
     def __init__(self, level=logging.NOTSET, host='localhost', port=27017, database_name='logs', collection='logs',
-                 username=None, password=None, fail_silently=False, formatter=None):
+                 username=None, password=None, fail_silently=False, formatter=None, capped=False, capped_max=1000, capped_size=1000000):
         """Setting up mongo handler, initializing mongo database connection via pymongo."""
         logging.Handler.__init__(self, level)
         self.host = host
@@ -80,6 +81,9 @@ class MongoHandler(logging.Handler):
         self.collection = None
         self.authenticated = False
         self.formatter = formatter or MongoFormatter()
+        self.capped = capped
+        self.capped_max = capped_max
+        self.capped_size = capped_size
         self._connect()
 
     def _connect(self):
@@ -96,7 +100,14 @@ class MongoHandler(logging.Handler):
         self.db = self.connection[self.database_name]
         if self.username is not None and self.password is not None:
             self.authenticated = self.db.authenticate(self.username, self.password)
-        self.collection = self.db[self.collection_name]
+            
+    	if self.capped:
+            try: #we don't want to override the capped collection (and it throws an error anyway)
+                self.collection = Collection(self.db, self.collection_name, capped=True, max=self.capped_max, size=self.capped_size)
+            except OperationFailure:
+                pass
+        else:
+            self.collection = self.db[self.collection_name]
 
     def close(self):
         """If authenticated, logging out and closing mongo database connection."""
@@ -112,4 +123,4 @@ class MongoHandler(logging.Handler):
                 self.collection.save(self.format(record))
             except Exception:
                 if not self.fail_silently:
-                    self.handleError(record)
+                    self.handleError(record) 

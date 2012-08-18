@@ -5,14 +5,12 @@ import unittest
 import logging
 import sys
 
-
 class TestMongoHandler(unittest.TestCase):
     host_name = 'localhost'
     database_name = 'log4mongo_test'
     collection_name = 'logs_test'
 
     def setUp(self):
-
         self.handler = MongoHandler(host=self.host_name, database_name=self.database_name, collection=self.collection_name)
         self.log = logging.getLogger('testLogger')
         self.log.setLevel(logging.DEBUG)
@@ -28,6 +26,12 @@ class TestMongoHandler(unittest.TestCase):
         self.handler = None
         sys.stderr.close()
         sys.stderr = self.old_stderr
+
+    def test_capped(self):
+        handler =  MongoHandler(host='localhost', database_name=self.database_name, collection=self.collection_name, capped = True, capped_max = 10)
+        options = self.handler.db.command("collstats", self.collection_name)
+        self.assertEqual(options["max"], 10)
+        self.assertEqual(options["capped"], 1)
 
     def test_connect(self):
         handler = MongoHandler(host='localhost', database_name=self.database_name, collection=self.collection_name)
