@@ -24,6 +24,7 @@ Example handler python configuration: ::
  logger = logging.getLogger('test')
  logger.addHandler(MongoHandler(host='localhost'))
  logger.warning('test')
+ logger.setLevel( logging.INFO )
 
 
 Contextual information
