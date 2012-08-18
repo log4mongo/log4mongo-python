@@ -27,12 +27,6 @@ class TestMongoHandler(unittest.TestCase):
         sys.stderr.close()
         sys.stderr = self.old_stderr
 
-    def test_capped(self):
-        handler =  MongoHandler(host='localhost', database_name=self.database_name, collection=self.collection_name, capped = True, capped_max = 10)
-        options = self.handler.db.command("collstats", self.collection_name)
-        self.assertEqual(options["max"], 10)
-        self.assertEqual(options["capped"], 1)
-
     def test_connect(self):
         handler = MongoHandler(host='localhost', database_name=self.database_name, collection=self.collection_name)
         self.assertTrue(isinstance(handler, MongoHandler))
@@ -93,3 +87,52 @@ class TestMongoHandler(unittest.TestCase):
         self.assertEqual(document['level'], 'INFO')
         self.assertEqual(document['ip'], '127.0.0.1')
         self.assertEqual(document['host'], 'localhost')
+
+
+class TestCappedMongoHandler(TestMongoHandler):
+
+    capped_max = 10
+
+    def setUp(self):
+        self.handler = MongoHandler(host=self.host_name, database_name=self.database_name,
+                                    collection=self.collection_name, capped=True, capped_max=self.capped_max)
+        self.log = logging.getLogger('testLogger')
+        self.log.setLevel(logging.DEBUG)
+        self.log.addHandler(self.handler)
+        self.old_stderr = sys.stdout
+        sys.stderr = StringIO()
+
+    def test_capped(self):
+        options = self.handler.db.command('collstats', self.collection_name)
+        self.assertEqual(options['max'], 10)
+        self.assertEqual(options['capped'], 1)
+
+    def test_capped_max(self):
+        for i in range(self.capped_max * 2):
+            self.log.info('test capped info')
+        documents = self.handler.collection.find()
+        self.assertEqual(documents.count(), 10)
+
+    def test_override_no_capped_collection(self):
+        # Creating no capped handler
+        self.handler_no_capped = MongoHandler(host=self.host_name, database_name=self.database_name, collection=self.collection_name)
+        self.log.removeHandler(self.handler)
+        self.log.addHandler(self.handler_no_capped)
+        self.log.info('test info')
+        # Creating capped handler
+        self.handler_capped = MongoHandler(host=self.host_name, database_name=self.database_name,
+                                           collection=self.collection_name, capped=True, capped_max=self.capped_max)
+        self.log.addHandler(self.handler)
+        self.log.info('test info')
+
+    def test_override_capped_collection(self):
+        # Creating capped handler
+        self.handler_capped = MongoHandler(host=self.host_name, database_name=self.database_name,
+            collection=self.collection_name, capped=True, capped_max=self.capped_max)
+        self.log.removeHandler(self.handler)
+        self.log.addHandler(self.handler)
+        self.log.info('test info')
+        # Creating no capped handler
+        self.handler_no_capped = MongoHandler(host=self.host_name, database_name=self.database_name, collection=self.collection_name)
+        self.log.addHandler(self.handler_no_capped)
+        self.log.info('test info')

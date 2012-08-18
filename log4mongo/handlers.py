@@ -1,8 +1,10 @@
+import logging
+
 from bson.timestamp import Timestamp
 from pymongo import Connection
 from pymongo.collection import Collection
 from pymongo.errors import AutoReconnect, OperationFailure
-import logging
+
 
 """
 Example format of generated bson document:
@@ -11,13 +13,13 @@ Example format of generated bson document:
     'level': 'ERROR',
     'timestamp': Timestamp(1290895671, 63),
     'message': 'test message',
-    'fileName': '/var/projects/python/log4mongo-python/tests/test_mongo_handler.py',
+    'fileName': '/var/projects/python/log4mongo-python/tests/test_handlers.py',
     'lineNumber': 38,
     'method': 'test_emit_exception',
     'loggerName':  'testLogger',
     'exception': {
         'stackTrace': 'Traceback (most recent call last):
-                       File "/var/projects/python/log4mongo-python/tests/test_mongo_handler.py", line 36, in test_emit_exception
+                       File "/var/projects/python/log4mongo-python/tests/test_handlers.py", line 36, in test_emit_exception
                        raise Exception(\'exc1\')
                        Exception: exc1',
         'message': 'exc1',
@@ -26,7 +28,7 @@ Example format of generated bson document:
 }
 """
 
-logging.LogRecord
+
 
 class MongoFormatter(logging.Formatter):
 
@@ -102,7 +104,7 @@ class MongoHandler(logging.Handler):
             self.authenticated = self.db.authenticate(self.username, self.password)
             
     	if self.capped:
-            try: #we don't want to override the capped collection (and it throws an error anyway)
+            try: # We don't want to override the capped collection (and it throws an error anyway)
                 self.collection = Collection(self.db, self.collection_name, capped=True, max=self.capped_max, size=self.capped_size)
             except OperationFailure:
                 pass
