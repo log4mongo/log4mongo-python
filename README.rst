@@ -56,14 +56,34 @@ It is possible to decorate you document with contextual information. There are t
 
 As you can see, second approach is more straightforward and there is no need to use LoggerAdapter.
 
+
+Capped collections
+------------------
+
+Capped collections are fixed-size collections that support high-throughput operations that insert, retrieve,
+and delete documents based on insertion order. Capped collections work in a way similar
+to circular buffers: once a collection fills its allocated space, it makes room for new documents
+by overwriting the oldest documents in the collection.
+
+Before switching to capped collections, read this document please: http://docs.mongodb.org/manual/core/capped-collections/
+
+This behaviour is disabled by default. You can enable this behaviour in constructor with *capped=True*:
+::
+
+ import logging
+ from log4mongo.handlers import MongoHandler
+
+ handler = MongoHandler(host='localhost', capped=True)
+
+
 Tests
 -----
 
 **Tested on evnironment**
 
-- Xubuntu Linux Ubuntu 12.04.1 LTS precise 64-bit
+- Xubuntu Linux Ubuntu 12.04.1 LTS 64-bit
 - python 2.7.3+
-- pymongo 2.1
+- pymongo 2.4.1
 - mongod - db version v2.0.4, pdfile version 4.5
 - python unittest
 
