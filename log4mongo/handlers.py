@@ -3,7 +3,7 @@ import logging
 from bson.timestamp import Timestamp
 from pymongo import Connection
 from pymongo.collection import Collection
-from pymongo.errors import AutoReconnect, OperationFailure
+from pymongo.errors import OperationFailure, PyMongoError
 
 
 """
@@ -93,11 +93,11 @@ class MongoHandler(logging.Handler):
 
         try:
             self.connection = Connection(host=self.host, port=self.port)
-        except AutoReconnect, e:
+        except PyMongoError:
             if self.fail_silently:
                 return
             else:
-                raise AutoReconnect(e)
+                raise
 
         self.db = self.connection[self.database_name]
         if self.username is not None and self.password is not None:

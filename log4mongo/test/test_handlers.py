@@ -1,5 +1,5 @@
-from log4mongo.handlers import MongoHandler, MongoFormatter
-from pymongo.errors import AutoReconnect
+from log4mongo.handlers import MongoHandler
+from pymongo.errors import PyMongoError
 from StringIO import StringIO
 import unittest
 import logging
@@ -34,7 +34,7 @@ class TestMongoHandler(unittest.TestCase):
         handler.close()
 
     def test_connect_failed(self):
-        with self.assertRaises(AutoReconnect):
+        with self.assertRaises(PyMongoError):
             MongoHandler(host='unknow_host', database_name=self.database_name, collection=self.collection_name)
 
     def test_connect_failed_silent(self):
