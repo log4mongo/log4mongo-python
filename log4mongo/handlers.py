@@ -41,9 +41,11 @@ class MongoFormatter(logging.Formatter):
             'timestamp': Timestamp(int(record.created), int(record.msecs)),
             'level': record.levelname,
             'thread': record.thread,
+            'threadName': record.threadName,
             'message': record.getMessage(),
             'loggerName': record.name,
             'fileName': record.pathname,
+            'module': record.module,
             'method': record.funcName,
             'lineNumber': record.lineno
         }
