@@ -41,9 +41,11 @@ class MongoFormatter(logging.Formatter):
             'timestamp': Timestamp(int(record.created), int(record.msecs)),
             'level': record.levelname,
             'thread': record.thread,
+            'threadName': record.threadName,
             'message': record.getMessage(),
             'loggerName': record.name,
             'fileName': record.pathname,
+            'module': record.module,
             'method': record.funcName,
             'lineNumber': record.lineno
         }
@@ -107,7 +109,8 @@ class MongoHandler(logging.Handler):
             try: # We don't want to override the capped collection (and it throws an error anyway)
                 self.collection = Collection(self.db, self.collection_name, capped=True, max=self.capped_max, size=self.capped_size)
             except OperationFailure:
-                pass
+                # capped collection exists, so get it
+                self.collection = self.db[self.collection_name]
         else:
             self.collection = self.db[self.collection_name]
 
