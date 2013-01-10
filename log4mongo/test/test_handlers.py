@@ -136,3 +136,14 @@ class TestCappedMongoHandler(TestMongoHandler):
         self.handler_no_capped = MongoHandler(host=self.host_name, database_name=self.database_name, collection=self.collection_name)
         self.log.addHandler(self.handler_no_capped)
         self.log.info('test info')
+
+    def test_emit_on_reconnect_existing_capped_collection(self):
+        self.log.removeHandler(self.handler)
+        handler = MongoHandler(host=self.host_name, database_name=self.database_name,
+                                    collection=self.collection_name, capped=True, capped_max=self.capped_max)
+        self.log.addHandler(handler)
+
+        self.log.warning('test message')
+        document = handler.collection.find_one({'message': 'test message', 'level': 'WARNING'})
+        self.assertEqual(document['message'], 'test message')
+        self.assertEqual(document['level'], 'WARNING')
