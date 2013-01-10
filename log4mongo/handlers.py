@@ -10,9 +10,11 @@ from pymongo.errors import OperationFailure, PyMongoError
 Example format of generated bson document:
 {
     'thread': -1216977216,
+    'threadName': 'MainThread',
     'level': 'ERROR',
     'timestamp': Timestamp(1290895671, 63),
     'message': 'test message',
+    'module': 'test_module',
     'fileName': '/var/projects/python/log4mongo-python/tests/test_handlers.py',
     'lineNumber': 38,
     'method': 'test_emit_exception',
@@ -109,7 +111,7 @@ class MongoHandler(logging.Handler):
             try: # We don't want to override the capped collection (and it throws an error anyway)
                 self.collection = Collection(self.db, self.collection_name, capped=True, max=self.capped_max, size=self.capped_size)
             except OperationFailure:
-                # capped collection exists, so get it
+                # Capped collection exists, so get it.
                 self.collection = self.db[self.collection_name]
         else:
             self.collection = self.db[self.collection_name]
@@ -128,4 +130,4 @@ class MongoHandler(logging.Handler):
                 self.collection.save(self.format(record))
             except Exception:
                 if not self.fail_silently:
-                    self.handleError(record) 
+                    self.handleError(record)
