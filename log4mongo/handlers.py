@@ -1,6 +1,7 @@
 import logging
 
 from bson.timestamp import Timestamp
+from datetime import datetime
 from pymongo import Connection
 from pymongo.collection import Collection
 from pymongo.errors import OperationFailure, PyMongoError
@@ -13,6 +14,7 @@ Example format of generated bson document:
     'threadName': 'MainThread',
     'level': 'ERROR',
     'timestamp': Timestamp(1290895671, 63),
+    'ISOtimestamp':ISODate(2013-06-24 12:05:00),
     'message': 'test message',
     'module': 'test_module',
     'fileName': '/var/projects/python/log4mongo-python/tests/test_handlers.py',
@@ -41,6 +43,7 @@ class MongoFormatter(logging.Formatter):
         # Standard document
         document = {
             'timestamp': Timestamp(int(record.created), int(record.msecs)),
+	    'ISOtimestamp': datetime.fromtimestamp(record.created),
             'level': record.levelname,
             'thread': record.thread,
             'threadName': record.threadName,
