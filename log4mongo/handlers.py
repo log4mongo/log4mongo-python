@@ -43,7 +43,7 @@ class MongoFormatter(logging.Formatter):
         # Standard document
         document = {
             'timestamp': Timestamp(int(record.created), int(record.msecs)),
-	    'ISOtimestamp': datetime.fromtimestamp(record.created),
+            'ISOtimestamp': datetime.utcfromtimestamp(record.created),
             'level': record.levelname,
             'thread': record.thread,
             'threadName': record.threadName,
