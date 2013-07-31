@@ -10,3 +10,6 @@
 .\#*
 /log4mongo.egg-info
 /dist
+# Eric IDE files
+.eric4project/
+log4mongo.e4p
