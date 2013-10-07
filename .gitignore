@@ -1,15 +1,3 @@
-.idea
-*.pyc
-*.pyo
-*.swp
-*.swo
-*.swn
-# Emacs backup files & locks
-*~
-\#*
 .\#*
 /log4mongo.egg-info
 /dist
-# Eric IDE files
-.eric4project/
-log4mongo.e4p
