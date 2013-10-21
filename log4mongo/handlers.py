@@ -31,7 +31,6 @@ Example format of generated bson document:
 """
 
 
-
 class MongoFormatter(logging.Formatter):
 
     DEFAULT_PROPERTIES = logging.LogRecord('', '', '', '', '', '', '', '').__dict__.keys()
@@ -72,7 +71,8 @@ class MongoFormatter(logging.Formatter):
 class MongoHandler(logging.Handler):
 
     def __init__(self, level=logging.NOTSET, host='localhost', port=27017, database_name='logs', collection='logs',
-                 username=None, password=None, fail_silently=False, formatter=None, capped=False, capped_max=1000, capped_size=1000000):
+                 username=None, password=None, fail_silently=False, formatter=None, capped=False,
+                 capped_max=1000, capped_size=1000000, **options):
         """Setting up mongo handler, initializing mongo database connection via pymongo."""
         logging.Handler.__init__(self, level)
         self.host = host
@@ -90,13 +90,14 @@ class MongoHandler(logging.Handler):
         self.capped = capped
         self.capped_max = capped_max
         self.capped_size = capped_size
+        self.options = options
         self._connect()
 
     def _connect(self):
         """Connecting to mongo database."""
 
         try:
-            self.connection = Connection(host=self.host, port=self.port)
+            self.connection = Connection(host=self.host, port=self.port, **self.options)
         except PyMongoError:
             if self.fail_silently:
                 return
@@ -106,9 +107,9 @@ class MongoHandler(logging.Handler):
         self.db = self.connection[self.database_name]
         if self.username is not None and self.password is not None:
             self.authenticated = self.db.authenticate(self.username, self.password)
-            
-    	if self.capped:
-            try: # We don't want to override the capped collection (and it throws an error anyway)
+
+        if self.capped:
+            try:  # We don't want to override the capped collection (and it throws an error anyway)
                 self.collection = Collection(self.db, self.collection_name, capped=True, max=self.capped_max, size=self.capped_size)
             except OperationFailure:
                 # Capped collection exists, so get it.
