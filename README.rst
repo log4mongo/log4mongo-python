@@ -81,10 +81,10 @@ Tests
 
 **Tested on evnironment**
 
-- Xubuntu Linux Ubuntu 12.04.1 LTS 64-bit
-- python 2.7.3+
-- pymongo 2.4.1
-- mongod - db version v2.0.4, pdfile version 4.5
+- LinuxMint 15 Olivia 64-bit
+- python 2.7.4
+- pymongo 2.6.3
+- mongod - db version v2.4.7, Mon Oct 28 12:15:05.831 git version: 0161738abf06c1f067b56a465b706efd6f4bf2aa
 - python unittest
 
 **Running tests**
