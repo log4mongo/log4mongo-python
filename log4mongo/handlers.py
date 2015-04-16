@@ -1,9 +1,16 @@
 import logging
 
 from bson.timestamp import Timestamp
-from pymongo import Connection
+try:
+    from pymongo import MongoClient as Connection
+except ImportError:
+    from pymongo import Connection
+
 from pymongo.collection import Collection
 from pymongo.errors import OperationFailure, PyMongoError
+import pymongo
+if pymongo.version_tuple[0] >= 3:
+    from pymongo.errors import ServerSelectionTimeoutError
 
 
 """
@@ -21,7 +28,8 @@ Example format of generated bson document:
     'loggerName':  'testLogger',
     'exception': {
         'stackTrace': 'Traceback (most recent call last):
-                       File "/var/projects/python/log4mongo-python/tests/test_handlers.py", line 36, in test_emit_exception
+                       File "/var/projects/python/log4mongo-python/tests/\
+                           test_handlers.py", line 36, in test_emit_exception
                        raise Exception(\'exc1\')
                        Exception: exc1',
         'message': 'exc1',
@@ -33,7 +41,8 @@ Example format of generated bson document:
 
 class MongoFormatter(logging.Formatter):
 
-    DEFAULT_PROPERTIES = logging.LogRecord('', '', '', '', '', '', '', '').__dict__.keys()
+    DEFAULT_PROPERTIES = logging.LogRecord(
+        '', '', '', '', '', '', '', '').__dict__.keys()
 
     def format(self, record):
         """Formats LogRecord into python dictionary."""
@@ -61,7 +70,8 @@ class MongoFormatter(logging.Formatter):
             })
         # Standard document decorated with extra contextual information
         if len(self.DEFAULT_PROPERTIES) != len(record.__dict__):
-            contextual_extra = set(record.__dict__).difference(set(self.DEFAULT_PROPERTIES))
+            contextual_extra = set(record.__dict__).difference(
+                set(self.DEFAULT_PROPERTIES))
             if contextual_extra:
                 for key in contextual_extra:
                     document[key] = record.__dict__[key]
@@ -90,27 +100,44 @@ class MongoHandler(logging.Handler):
         self.capped = capped
         self.capped_max = capped_max
         self.capped_size = capped_size
-        self.options = options
-        self._connect()
+        self._connect(**kwargs)
 
-    def _connect(self):
+    def _connect(self, **kwargs):
         """Connecting to mongo database."""
-
-        try:
-            self.connection = Connection(host=self.host, port=self.port, **self.options)
-        except PyMongoError:
-            if self.fail_silently:
-                return
-            else:
-                raise
+        if pymongo.version_tuple[0] < 3:
+            try:
+                self.connection = Connection(host=self.host, port=self.port,
+                                             **kwargs)
+            # pymongo >= 3.0 does not raise this error
+            except PyMongoError:
+                if self.fail_silently:
+                    return
+                else:
+                    raise
+        else:
+            self.connection = Connection(host=self.host, port=self.port,
+                                         **kwargs)
+            try:
+                self.connection.is_locked
+            except ServerSelectionTimeoutError:
+                if self.fail_silently:
+                    return
+                else:
+                    raise
 
         self.db = self.connection[self.database_name]
         if self.username is not None and self.password is not None:
-            self.authenticated = self.db.authenticate(self.username, self.password)
+            self.authenticated = self.db.authenticate(self.username,
+                                                      self.password)
 
         if self.capped:
-            try:  # We don't want to override the capped collection (and it throws an error anyway)
-                self.collection = Collection(self.db, self.collection_name, capped=True, max=self.capped_max, size=self.capped_size)
+            #
+            # We don't want to override the capped collection
+            # (and it throws an error anyway)
+            try:
+                self.collection = Collection(self.db, self.collection_name,
+                                             capped=True, max=self.capped_max,
+                                             size=self.capped_size)
             except OperationFailure:
                 # Capped collection exists, so get it.
                 self.collection = self.db[self.collection_name]
@@ -118,11 +145,13 @@ class MongoHandler(logging.Handler):
             self.collection = self.db[self.collection_name]
 
     def close(self):
-        """If authenticated, logging out and closing mongo database connection."""
+        """
+        If authenticated, logging out and closing mongo database connection.
+        """
         if self.authenticated:
             self.db.logout()
         if self.connection is not None:
-            self.connection.disconnect()
+            self.connection.close()
 
     def emit(self, record):
         """Inserting new logging record to mongo database."""
