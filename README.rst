@@ -8,7 +8,7 @@ Requirements
 ------------
 
 - python 2.7+
-- pymongo
+- pymongo 2.8+
 - mongo database
 
 For more information see *debian_requirements.txt* and *requirements.txt* files.
@@ -100,12 +100,18 @@ To run the test run command: ::
  $ python setup.py test
 
 
-Author
-------
+Original Author
+---------------
 
 | char0n (Vladimír Gorej, CodeScale s.r.o.) 
 | email: gorej@codescale.net
 | web: http://www.codescale.net
+
+Current Maitainer
+-----------------
+| Oz Nahum Tiram
+| email: nahumoz@gmail.com
+| web: oz123.github.io
 
 References
 ----------
