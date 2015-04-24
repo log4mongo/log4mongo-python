@@ -1,3 +1,3 @@
 # -*- coding: utf-8 -*-
 __author__ = u'Vladimír Gorej <gorej@codescale.net>'
-__version__ = '1.4.1'
+__version__ = '1.4.2'
