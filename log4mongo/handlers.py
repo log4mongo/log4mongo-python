@@ -80,10 +80,15 @@ class MongoFormatter(logging.Formatter):
 
 class MongoHandler(logging.Handler):
 
-    def __init__(self, level=logging.NOTSET, host='localhost', port=27017, database_name='logs', collection='logs',
-                 username=None, password=None, fail_silently=False, formatter=None, capped=False,
-                 capped_max=1000, capped_size=1000000, **options):
-        """Setting up mongo handler, initializing mongo database connection via pymongo."""
+    def __init__(self, level=logging.NOTSET, host='localhost', port=27017,
+                 database_name='logs', collection='logs',
+                 username=None, password=None, fail_silently=False,
+                 formatter=None, capped=False,
+                 capped_max=1000, capped_size=1000000, **kwargs):
+        """
+        Setting up mongo handler, initializing mongo database connection via
+        pymongo.
+        """
         logging.Handler.__init__(self, level)
         self.host = host
         self.port = port
