@@ -1,4 +1,5 @@
 from log4mongo.handlers import MongoHandler
+import log4mongo.handlers
 from pymongo.errors import PyMongoError
 import pymongo
 if pymongo.version_tuple[0] >= 3:
@@ -43,6 +44,7 @@ class TestMongoHandler(unittest.TestCase):
         handler.close()
 
     def test_1_connect_failed(self):
+        log4mongo.handlers._connection = None
         kwargs = {'connectTimeoutMS': 2000, 'serverselectiontimeoutms': 2000}
         if pymongo.version_tuple[0] < 3:
             with self.assertRaises(PyMongoError):
@@ -58,6 +60,7 @@ class TestMongoHandler(unittest.TestCase):
                              **kwargs)
 
     def test_connect_failed_silent(self):
+        log4mongo.handlers._connection = None
         kwargs = {'connectTimeoutMS': 2000, 'serverselectiontimeoutms': 2000}
         handler = MongoHandler(host='unknow_host',
                                database_name=self.database_name,
