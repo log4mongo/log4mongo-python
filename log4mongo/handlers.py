@@ -1,5 +1,4 @@
 import logging
-
 from bson.timestamp import Timestamp
 try:
     from pymongo import MongoClient as Connection
@@ -37,7 +36,7 @@ Example format of generated bson document:
     }
 }
 """
-
+_connection = None
 
 class MongoFormatter(logging.Formatter):
 
@@ -79,15 +78,23 @@ class MongoFormatter(logging.Formatter):
 
 
 class MongoHandler(logging.Handler):
-
+    
     def __init__(self, level=logging.NOTSET, host='localhost', port=27017,
                  database_name='logs', collection='logs',
                  username=None, password=None, fail_silently=False,
                  formatter=None, capped=False,
-                 capped_max=1000, capped_size=1000000, **kwargs):
+                 capped_max=1000, capped_size=1000000, reuse=True, **kwargs):
         """
         Setting up mongo handler, initializing mongo database connection via
         pymongo.
+
+        If reuse is set to false every handler will have it's own MongoClient. 
+        This could hammer down your MongoDB instance, but you can still use this 
+        option. 
+
+        The default is True. As such a program with multiple handlers 
+        that log to mongodb will have those handlers share a single connection 
+        to MongoDB.
         """
         logging.Handler.__init__(self, level)
         self.host = host
@@ -105,30 +112,37 @@ class MongoHandler(logging.Handler):
         self.capped = capped
         self.capped_max = capped_max
         self.capped_size = capped_size
+        self.reuse = reuse
         self._connect(**kwargs)
+        
 
     def _connect(self, **kwargs):
         """Connecting to mongo database."""
-        if pymongo.version_tuple[0] < 3:
-            try:
+        global _connection
+        if self.reuse and _connection:
+            self.connection = _connection
+        else:
+            if pymongo.version_tuple[0] < 3:
+                try:
+                    self.connection = Connection(host=self.host, port=self.port,
+                                                 **kwargs)
+                # pymongo >= 3.0 does not raise this error
+                except PyMongoError:
+                    if self.fail_silently:
+                        return
+                    else:
+                        raise
+            else:
                 self.connection = Connection(host=self.host, port=self.port,
                                              **kwargs)
-            # pymongo >= 3.0 does not raise this error
-            except PyMongoError:
-                if self.fail_silently:
-                    return
-                else:
-                    raise
-        else:
-            self.connection = Connection(host=self.host, port=self.port,
-                                         **kwargs)
-            try:
-                self.connection.is_locked
-            except ServerSelectionTimeoutError:
-                if self.fail_silently:
-                    return
-                else:
-                    raise
+                try:
+                    self.connection.is_locked
+                except ServerSelectionTimeoutError:
+                    if self.fail_silently:
+                        return
+                    else:
+                        raise
+            _connection = self.connection
 
         self.db = self.connection[self.database_name]
         if self.username is not None and self.password is not None:
@@ -148,7 +162,7 @@ class MongoHandler(logging.Handler):
                 self.collection = self.db[self.collection_name]
         else:
             self.collection = self.db[self.collection_name]
-
+    
     def close(self):
         """
         If authenticated, logging out and closing mongo database connection.
@@ -166,3 +180,6 @@ class MongoHandler(logging.Handler):
             except Exception:
                 if not self.fail_silently:
                     self.handleError(record)
+
+    def __exit__(self ,type, value, traceback):
+        self.close()
