@@ -1,4 +1,4 @@
-from log4mongo.handlers import MongoHandler
+from log4mongo.handlers import MongoHandler, write_method
 import log4mongo.handlers
 from pymongo.errors import PyMongoError
 import pymongo
@@ -93,9 +93,8 @@ class TestMongoHandler(unittest.TestCase):
     def test_emit_fail(self):
         self.handler.collection = ''
         self.log.warn('test warning')
-        self.assertRegexpMatches(
-            sys.stderr.getvalue(),
-            r"AttributeError: 'str' object has no attribute 'save'")
+        val = sys.stderr.getvalue()
+        self.assertRegexpMatches(val, r"AttributeError: 'str' object has no attribute '{}'".format(write_method))
 
     def test_email_fail_silent(self):
         self.handler.fail_silently = True

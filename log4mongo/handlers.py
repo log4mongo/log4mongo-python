@@ -10,7 +10,9 @@ from pymongo.errors import OperationFailure, PyMongoError
 import pymongo
 if pymongo.version_tuple[0] >= 3:
     from pymongo.errors import ServerSelectionTimeoutError
-
+    write_method = 'insert_one'
+else:
+    write_method = 'save'
 
 """
 Example format of generated bson document:
@@ -78,7 +80,7 @@ class MongoFormatter(logging.Formatter):
 
 
 class MongoHandler(logging.Handler):
-    
+
     def __init__(self, level=logging.NOTSET, host='localhost', port=27017,
                  database_name='logs', collection='logs',
                  username=None, password=None, fail_silently=False,
@@ -88,12 +90,12 @@ class MongoHandler(logging.Handler):
         Setting up mongo handler, initializing mongo database connection via
         pymongo.
 
-        If reuse is set to false every handler will have it's own MongoClient. 
-        This could hammer down your MongoDB instance, but you can still use this 
-        option. 
+        If reuse is set to false every handler will have it's own MongoClient.
+        This could hammer down your MongoDB instance, but you can still use this
+        option.
 
-        The default is True. As such a program with multiple handlers 
-        that log to mongodb will have those handlers share a single connection 
+        The default is True. As such a program with multiple handlers
+        that log to mongodb will have those handlers share a single connection
         to MongoDB.
         """
         logging.Handler.__init__(self, level)
@@ -114,7 +116,7 @@ class MongoHandler(logging.Handler):
         self.capped_size = capped_size
         self.reuse = reuse
         self._connect(**kwargs)
-        
+
 
     def _connect(self, **kwargs):
         """Connecting to mongo database."""
@@ -162,7 +164,7 @@ class MongoHandler(logging.Handler):
                 self.collection = self.db[self.collection_name]
         else:
             self.collection = self.db[self.collection_name]
-    
+
     def close(self):
         """
         If authenticated, logging out and closing mongo database connection.
@@ -176,7 +178,7 @@ class MongoHandler(logging.Handler):
         """Inserting new logging record to mongo database."""
         if self.collection is not None:
             try:
-                self.collection.save(self.format(record))
+                getattr(self.collection, write_method)(self.format(record))
             except Exception:
                 if not self.fail_silently:
                     self.handleError(record)

@@ -79,12 +79,12 @@ This behaviour is disabled by default. You can enable this behaviour in construc
 Tests
 -----
 
-**Tested on evnironment**
+** Tested on evnironment **
 
 - LinuxMint 15 Olivia 64-bit
 - python 2.7.4
-- pymongo 2.6.3
-- mongod - db version v2.4.7, Mon Oct 28 12:15:05.831 git version: 0161738abf06c1f067b56a465b706efd6f4bf2aa
+- pymongo >2.8.3
+- mongod - db version v3.0.7
 - python unittest
 
 **Running tests**
