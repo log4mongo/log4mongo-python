@@ -4,7 +4,12 @@ from pymongo.errors import PyMongoError
 import pymongo
 if pymongo.version_tuple[0] >= 3:
     from pymongo.errors import ServerSelectionTimeoutError
-from StringIO import StringIO
+
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
+
 import unittest
 import logging
 import sys
