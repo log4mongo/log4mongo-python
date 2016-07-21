@@ -40,6 +40,7 @@ Example format of generated bson document:
 """
 _connection = None
 
+
 class MongoFormatter(logging.Formatter):
 
     DEFAULT_PROPERTIES = logging.LogRecord(
@@ -83,16 +84,16 @@ class MongoHandler(logging.Handler):
 
     def __init__(self, level=logging.NOTSET, host='localhost', port=27017,
                  database_name='logs', collection='logs',
-                 username=None, password=None, authentication_db='admin', fail_silently=False,
-                 formatter=None, capped=False,
+                 username=None, password=None, authentication_db='admin',
+                 fail_silently=False, formatter=None, capped=False,
                  capped_max=1000, capped_size=1000000, reuse=True, **kwargs):
         """
         Setting up mongo handler, initializing mongo database connection via
         pymongo.
 
         If reuse is set to false every handler will have it's own MongoClient.
-        This could hammer down your MongoDB instance, but you can still use this
-        option.
+        This could hammer down your MongoDB instance, but you can still use
+        this option.
 
         The default is True. As such a program with multiple handlers
         that log to mongodb will have those handlers share a single connection
@@ -118,7 +119,6 @@ class MongoHandler(logging.Handler):
         self.reuse = reuse
         self._connect(**kwargs)
 
-
     def _connect(self, **kwargs):
         """Connecting to mongo database."""
         global _connection
@@ -127,8 +127,8 @@ class MongoHandler(logging.Handler):
         else:
             if pymongo.version_tuple[0] < 3:
                 try:
-                    self.connection = Connection(host=self.host, port=self.port,
-                                                 **kwargs)
+                    self.connection = Connection(host=self.host,
+                                                 port=self.port, **kwargs)
                 # pymongo >= 3.0 does not raise this error
                 except PyMongoError:
                     if self.fail_silently:
@@ -149,9 +149,9 @@ class MongoHandler(logging.Handler):
 
         self.db = self.connection[self.database_name]
         if self.username is not None and self.password is not None:
-            authentication_db = self.connection[self.authentication_database_name]
-            self.authenticated = authentication_db.authenticate(self.username,
-                                                                self.password)
+            auth_db = self.connection[self.authentication_database_name]
+            self.authenticated = auth_db.authenticate(self.username,
+                                                      self.password)
 
         if self.capped:
             #
@@ -185,5 +185,5 @@ class MongoHandler(logging.Handler):
                 if not self.fail_silently:
                     self.handleError(record)
 
-    def __exit__(self ,type, value, traceback):
+    def __exit__(self, type, value, traceback):
         self.close()
