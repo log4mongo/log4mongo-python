@@ -1,5 +1,6 @@
+import datetime as dt
 import logging
-from bson.timestamp import Timestamp
+
 try:
     from pymongo import MongoClient as Connection
 except ImportError:
@@ -20,7 +21,7 @@ Example format of generated bson document:
     'thread': -1216977216,
     'threadName': 'MainThread',
     'level': 'ERROR',
-    'timestamp': Timestamp(1290895671, 63),
+    'timestamp': datetime.datetime(2016, 8, 16, 15, 20, 24, 794341),
     'message': 'test message',
     'module': 'test_module',
     'fileName': '/var/projects/python/log4mongo-python/tests/test_handlers.py',
@@ -50,7 +51,7 @@ class MongoFormatter(logging.Formatter):
         """Formats LogRecord into python dictionary."""
         # Standard document
         document = {
-            'timestamp': Timestamp(int(record.created), int(record.msecs)),
+            'timestamp': dt.datetime.utcnow(),
             'level': record.levelname,
             'thread': record.thread,
             'threadName': record.threadName,
