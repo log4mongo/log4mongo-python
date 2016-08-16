@@ -8,7 +8,7 @@ Requirements
 ------------
 
 - python 2.7+
-- pymongo
+- pymongo 2.8+
 - mongo database
 
 For more information see *debian_requirements.txt* and *requirements.txt* files.
@@ -79,12 +79,12 @@ This behaviour is disabled by default. You can enable this behaviour in construc
 Tests
 -----
 
-**Tested on evnironment**
+** Tested on evnironment **
 
-- Xubuntu Linux Ubuntu 12.04.1 LTS 64-bit
-- python 2.7.3+
-- pymongo 2.4.1
-- mongod - db version v2.0.4, pdfile version 4.5
+- Ubuntu 14.04
+- python 2.7.4
+- pymongo >2.8.3
+- mongod - db version v3.0.2
 - python unittest
 
 **Running tests**
@@ -100,12 +100,20 @@ To run the test run command: ::
  $ python setup.py test
 
 
-Author
-------
+See vagrant file to quickly setup the test environment.
+
+Original Author
+---------------
 
 | char0n (Vladimír Gorej, CodeScale s.r.o.) 
 | email: gorej@codescale.net
 | web: http://www.codescale.net
+
+Current Maitainer
+-----------------
+| Oz Nahum Tiram
+| email: nahumoz@gmail.com
+| web: oz123.github.io
 
 References
 ----------
