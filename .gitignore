@@ -10,3 +10,4 @@
 .\#*
 /log4mongo.egg-info
 /dist
+*.vagrant
