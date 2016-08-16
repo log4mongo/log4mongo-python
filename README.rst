@@ -81,10 +81,10 @@ Tests
 
 ** Tested on evnironment **
 
-- LinuxMint 15 Olivia 64-bit
+- Ubuntu 14.04
 - python 2.7.4
 - pymongo >2.8.3
-- mongod - db version v3.0.7
+- mongod - db version v3.0.2
 - python unittest
 
 **Running tests**
@@ -99,6 +99,8 @@ To run the test run command: ::
  $ python test.py
  $ python setup.py test
 
+
+See vagrant file to quickly setup the test environment.
 
 Original Author
 ---------------
