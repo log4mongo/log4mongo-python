@@ -10,8 +10,10 @@ import os
 
 
 def read(fname):
-    return open(os.path.join(os.path.dirname(__file__), fname)).read()
-
+    try:
+        return open(os.path.join(os.path.dirname(__file__), fname), encoding='utf-8').read()
+    except TypeError:  # encoding is only Python3
+        return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 setup(
     name='log4mongo',
