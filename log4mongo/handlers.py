@@ -225,6 +225,7 @@ class BufferedMongoHandler(MongoHandler):
         self.buffer_periodical_flush_timing = buffer_periodical_flush_timing
         self.buffer_early_flush_level = buffer_early_flush_level
         self.last_record = None #kept for handling the error on flush
+        self.buffer_timer_thread = None
 
         self._buffer_lock = None
         self._timer_stopper = None
@@ -250,11 +251,12 @@ class BufferedMongoHandler(MongoHandler):
                     while not stopped.wait(interval) and main_thead.is_alive():  # the first call is in `interval` secs
                         func(*args)
 
-                threading.Thread(target=loop, daemon=True).start()
-                return stopped.set
+                timer_thread = threading.Thread(target=loop, daemon=True)
+                timer_thread.start()
+                return stopped.set, timer_thread
 
             # launch thread
-            self._timer_stopper = call_repeatedly(self.buffer_periodical_flush_timing, self.flush_to_mongo)
+            self._timer_stopper, self.buffer_timer_thread = call_repeatedly(self.buffer_periodical_flush_timing, self.flush_to_mongo)
 
     def emit(self, record):
         """Inserting new logging record to buffer and flush if necessary."""
