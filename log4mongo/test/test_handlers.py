@@ -98,14 +98,14 @@ class TestMongoHandler(unittest.TestCase):
 
     def test_emit_fail(self):
         self.handler.collection = ''
-        self.log.warn('test warning')
+        self.log.warning('test warning')
         val = sys.stderr.getvalue()
         self.assertRegexpMatches(val, r"AttributeError: 'str' object has no attribute '{}'".format(write_method))
 
     def test_email_fail_silent(self):
         self.handler.fail_silently = True
         self.handler.collection = ''
-        self.log.warn('test warming')
+        self.log.warning('test warming')
         self.assertEqual(sys.stderr.getvalue(), '')
 
     def test_contextual_info(self):
