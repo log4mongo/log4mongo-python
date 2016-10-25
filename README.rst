@@ -92,7 +92,7 @@ An early buffer flush can happen when a critical message is emitted.
 And in order to avoid messages to stay indefinitively in the buffer queue before appearing in database, a periodical
 flush happens every X seconds.
 
-This periodical flush can also be deactivated with *buffer_periodical_flush_timing=False*, thus avoiding
+This periodical flush can also be deactivated with ``buffer_periodical_flush_timing=False``, thus avoiding
 the timer thread to be created.
 
 Buffer size is configurable, as well as the log level for early flush (default is CRITICAL):
