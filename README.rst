@@ -95,7 +95,7 @@ flush happens every X seconds.
 This periodical flush can also be deactivated with ``buffer_periodical_flush_timing=False``, thus avoiding
 the timer thread to be created.
 
-Buffer size is configurable, as well as the log level for early flush (default is CRITICAL):
+Buffer size is configurable, as well as the log level for early flush (default is ``logging.CRITICAL``):
 
 .. code-block:: python
 
