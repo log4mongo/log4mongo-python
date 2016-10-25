@@ -85,15 +85,15 @@ Buffered handler
 ----------------
 
 ``BufferedMongoHandler`` is a subclass of ``MongoHandler`` allowing to buffer log messages
- and write them all at once to the database. The goal is to avoid too many writes to the database, thus avoiding
- too frequent write-locks.
+and write them all at once to the database. The goal is to avoid too many writes to the database, thus avoiding
+too frequent write-locks.
 Log message buffer flush happens when the buffer is full, when a critical log message is emitted, and also periodically.
 An early buffer flush can happen when a critical message is emitted.
 And in order to avoid messages to stay indefinitively in the buffer queue before appearing in database, a periodical
- flush happens every X seconds.
+flush happens every X seconds.
 
-This periodical flush can also be deactivated with *buffer_periodical_flush_timing=False*,
- thus avoiding the timer thread to be created.
+This periodical flush can also be deactivated with *buffer_periodical_flush_timing=False*, thus avoiding
+the timer thread to be created.
 
 Buffer size is configurable, as well as the log level for early flush (default is CRITICAL):
 
@@ -102,7 +102,7 @@ Buffer size is configurable, as well as the log level for early flush (default i
  import logging
  from log4mongo.handlers import BufferedMongoHandler
 
- handler = BufferedMongoHandler(host='localhost',                          # All usual MongoHandler parameters are valid
+ handler = BufferedMongoHandler(host='localhost',                          # All MongoHandler parameters are valid
                                 capped=True,
                                 buffer_size=100,                           # buffer size.
                                 buffer_periodical_flush_timing=10.0,       # periodical flush every 10 seconds
