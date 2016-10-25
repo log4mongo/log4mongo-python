@@ -16,7 +16,9 @@ For more information see *debian_requirements.txt* and *requirements.txt* files.
 Configuration
 -------------
 
-Example handler python configuration: ::
+Example handler python configuration:
+
+.. code-block:: python
 
  import logging
  from log4mongo.handlers import MongoHandler
@@ -32,7 +34,8 @@ Contextual information
 It is possible to decorate you document with contextual information. There are tow approaches.
 
 **1.) approach**
-::
+
+.. code-block:: python
 
  import logging
  from log4mongo.handlers import MongoHandler
@@ -43,7 +46,8 @@ It is possible to decorate you document with contextual information. There are t
  logging.LoggerAdapter(logger, {'ip': '127.0.0.1'}).info('test')
 
 **2.) approach**
-::
+
+.. code-block:: python
 
  import logging
  from log4mongo.handlers import MongoHandler
@@ -68,7 +72,8 @@ by overwriting the oldest documents in the collection.
 Before switching to capped collections, read this document please: http://docs.mongodb.org/manual/core/capped-collections/
 
 This behaviour is disabled by default. You can enable this behaviour in constructor with *capped=True*:
-::
+
+.. code-block:: python
 
  import logging
  from log4mongo.handlers import MongoHandler
@@ -89,12 +94,16 @@ Tests
 
 **Running tests**
 
-Before you run the test you must start mongo database. You will do so by this command: ::
+Before you run the test you must start mongo database. You will do so by this command:
+
+.. code-block::
 
  $ mongod --dbpath /tmp/
 
 
-To run the test run command: ::
+To run the test run command:
+
+.. code-block::
 
  $ python test.py
  $ python setup.py test
