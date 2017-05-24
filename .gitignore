@@ -11,3 +11,7 @@
 /log4mongo.egg-info
 /dist
 *.vagrant
+
+.cache/
+.eggs/
+build/

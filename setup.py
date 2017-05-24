@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from setuptools import setup
+from setuptools import setup, find_packages
 import log4mongo
 import os
 
@@ -25,9 +25,11 @@ setup(
     url='http://log4mongo.org/display/PUB/Log4mongo+for+Python',
     download_url='http://github.com/log4mongo/log4mongo-python/tarball/master',
     license='BSD',
-    keywords = "mongodb mongo logging handler",
+    keywords="mongodb mongo logging handler",
     install_requires=['pymongo'],
-    packages=['log4mongo', 'log4mongo.test'],
+    setup_requires=['pytest-runner'],
+    tests_require=['pytest'],
+    packages=find_packages(exclude=['tests']),
     platforms='any',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
@@ -42,5 +44,4 @@ setup(
         'Topic :: System :: Logging',
         'Topic :: System :: Monitoring'
     ],
-    test_suite='log4mongo.test',
 )
