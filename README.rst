@@ -117,10 +117,10 @@ Test
 ** Tested on evnironment **
 
 - Ubuntu 14.04
-- python 2.7.4
+- python >2.7.4
 - pymongo >2.8.3
 - mongod - db version v3.0.2
-- python unittest
+- pytest
 
 **Running tests**
 
@@ -135,7 +135,6 @@ To run the test run command:
 
 .. code-block::
 
- $ python test.py
  $ python setup.py test
 
 
@@ -144,7 +143,7 @@ See vagrant file to quickly setup the test environment.
 Original Author
 ---------------
 
-| char0n (Vladimír Gorej, CodeScale s.r.o.) 
+| char0n (Vladimír Gorej, CodeScale s.r.o.)
 | email: gorej@codescale.net
 | web: http://www.codescale.net
 
