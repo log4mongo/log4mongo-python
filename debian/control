@@ -1,0 +1,38 @@
+Source: log4mongo
+Section: python
+Priority: optional
+Maintainer: Oz Tiram <oz.tiram@gmail.com>
+Standards-Version: 3.9.7
+X-Python-Version: >= 2.6
+XS-Python3-Version: >=3.2
+Build-Depends:
+ python-all-dev (>= 2.6.6-3~),
+ dh-python, debhelper (>=9.0.0~),
+ python-pymongo,
+ python-setuptools,
+ python3-setuptools,
+ python3-pymongo
+Homepage: https://github.com/log4mongo/log4mongo-python
+Vcs-Git: git@github.com:log4mongo/log4mongo-python.git
+
+Package: python-log4mongo
+Architecture: any
+Depends:
+ ${python:Depends},
+ ${misc:Depends},
+ python-pymongo
+Description: Python logging handlers which emit messages to MongoDB
+ This Python module offers a few logging handlers which log python messages
+ to MongoDB collections.
+
+Package: python3-log4mongo
+Architecture: any
+Depends:
+ ${python3:Depends},
+ ${misc:Depends},
+ python3-pymongo
+Description: Python3 logging handlers which emit messages to MongoDB
+ This Python3 module offers a few logging handlers which log python messages
+ to MongoDB collections.
+
+
