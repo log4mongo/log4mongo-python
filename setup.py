@@ -22,7 +22,7 @@ setup(
     description='mongo database handler for python logging',
     long_description=read('README.rst'),
     author=u'Vladimír Gorej',
-    author_email='gorej@codescale.net',
+    author_email='vladimir.gorej@gmail.com',
     url='http://log4mongo.org/display/PUB/Log4mongo+for+Python',
     download_url='http://github.com/log4mongo/log4mongo-python/tarball/master',
     license='BSD',
