@@ -143,9 +143,9 @@ See vagrant file to quickly setup the test environment.
 Original Author
 ---------------
 
-| char0n (Vladimír Gorej, CodeScale s.r.o.)
-| email: gorej@codescale.net
-| web: http://www.codescale.net
+| char0n (Vladimir Gorej)
+| email: vladimir.gorej@gmail.com
+| web: https://www.linkedin.com/in/vladimirgorej/
 
 Current Maitainer
 -----------------
