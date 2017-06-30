@@ -142,7 +142,7 @@ class MongoHandler(logging.Handler):
                 self.connection = Connection(host=self.host, port=self.port,
                                              **kwargs)
                 try:
-                    self.connection.is_locked
+                    self.connection.is_primary
                 except ServerSelectionTimeoutError:
                     if self.fail_silently:
                         return
