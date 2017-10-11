@@ -251,7 +251,8 @@ class BufferedMongoHandler(MongoHandler):
                     while not stopped.wait(interval) and main_thead.is_alive():  # the first call is in `interval` secs
                         func(*args)
 
-                timer_thread = threading.Thread(target=loop, daemon=True)
+                timer_thread = threading.Thread(target=loop)
+                timer_thread.daemon = True
                 timer_thread.start()
                 return stopped.set, timer_thread
 
