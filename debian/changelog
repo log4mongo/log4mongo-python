@@ -1,0 +1,5 @@
+python-log4mongo (1.0-1) UNRELEASED; urgency=medium
+
+  * Initial package build
+
+ -- Oz N Tiram <oz.tiram@gmail.com>  Wed, 24 May 2017 22:27:07 +0100

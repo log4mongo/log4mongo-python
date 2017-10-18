@@ -1,4 +1,5 @@
-from log4mongo.handlers import BufferedMongoHandler, MongoHandler, write_method, write_many_method
+from log4mongo.handlers import (BufferedMongoHandler, MongoHandler,
+                                write_method, write_many_method)
 import log4mongo.handlers
 from pymongo.errors import PyMongoError
 import pymongo
