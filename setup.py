@@ -28,8 +28,7 @@ setup(
     license='BSD',
     keywords="mongodb mongo logging handler",
     install_requires=['pymongo'],
-    setup_requires=['pytest-runner'],
-    tests_require=['pytest'],
+    tests_require=['pytest','pytest-runner'],
     packages=find_packages(exclude=['tests']),
     platforms='any',
     classifiers=[
