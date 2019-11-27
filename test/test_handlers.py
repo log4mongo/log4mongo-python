@@ -15,6 +15,7 @@ import unittest
 import logging
 import time
 import sys
+import threading
 
 
 class TestMongoHandler(unittest.TestCase):
@@ -327,16 +328,23 @@ class TestBufferedMongoHandler(TestMongoHandler):
                                                      'level': 'CRITICAL'}).count()
         self.assertEqual(doc_amount, 1, "One CRITICAL message should have been written to database")
 
-    def test_buffer_periodical_flush(self):
+    def _buffer_periodical_flush(self, is_initialized_in_thread):
+        def initialize():
+            # Creating capped handler
+            self.handler_periodical = BufferedMongoHandler(host=self.host_name,
+                                                           database_name=self.database_name,
+                                                           collection=self.collection_name,
+                                                           buffer_size=5, buffer_periodical_flush_timing=2.0,
+                                                           buffer_early_flush_level=logging.CRITICAL)
+            self.log.removeHandler(self.handler)
+            self.log.addHandler(self.handler_periodical)
 
-        # Creating capped handler
-        self.handler_periodical = BufferedMongoHandler(host=self.host_name,
-                                                       database_name=self.database_name,
-                                                       collection=self.collection_name,
-                                                       buffer_size=5, buffer_periodical_flush_timing=2.0,
-                                                       buffer_early_flush_level=logging.CRITICAL)
-        self.log.removeHandler(self.handler)
-        self.log.addHandler(self.handler_periodical)
+        if is_initialized_in_thread:
+            t = threading.Thread(target=initialize)
+            t.start()
+            t.join()
+        else:
+            initialize()
 
         self.log.info('test periodical buffer')
         document = self.handler_periodical.collection.find_one({'message': 'test periodical buffer'})
@@ -365,3 +373,9 @@ class TestBufferedMongoHandler(TestMongoHandler):
         # reset to previous
         self.log.removeHandler(self.handler_periodical)
         self.log.addHandler(self.handler)
+
+    def test_buffer_periodical_flush(self):
+        self._buffer_periodical_flush(is_initialized_in_thread=False)
+
+    def test_buffer_periodical_flush_init_in_new_thread(self):
+        self._buffer_periodical_flush(is_initialized_in_thread=True)

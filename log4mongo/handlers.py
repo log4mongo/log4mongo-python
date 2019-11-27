@@ -237,9 +237,7 @@ class BufferedMongoHandler(MongoHandler):
             import atexit
             atexit.register(self.destroy)
 
-            # retrieving main thread as a safety
             import threading
-            main_thead = threading.current_thread()
             self._buffer_lock = threading.RLock()
 
             # call at interval function
@@ -248,7 +246,7 @@ class BufferedMongoHandler(MongoHandler):
 
                 # actual thread function
                 def loop():
-                    while not stopped.wait(interval) and main_thead.is_alive():  # the first call is in `interval` secs
+                    while not stopped.wait(interval):  # the first call is in `interval` secs
                         func(*args)
 
                 timer_thread = threading.Thread(target=loop)
