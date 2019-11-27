@@ -7,8 +7,8 @@ log4mongo-python is using pymongo driver - http://github.com/mongodb/mongo-pytho
 Requirements
 ------------
 
-- python 2.7+
-- pymongo 2.8+
+- python 3.6+
+- pymongo 3.9+
 - mongo database
 
 For more information see *debian_requirements.txt* and *requirements.txt* files.
@@ -116,10 +116,10 @@ Test
 
 ** Tested on evnironment **
 
-- Ubuntu 14.04
-- python >2.7.4
-- pymongo >2.8.3
-- mongod - db version v3.0.2
+- Ubuntu 18.04
+- python >=3.6.4
+- pymongo >=3.9.0
+- mongod - db version 4.0.13
 - pytest
 
 **Running tests**
@@ -135,7 +135,7 @@ To run the test run command:
 
 .. code-block::
 
- $ python setup.py test
+ $ python3 setup.py test
 
 
 See vagrant file to quickly setup the test environment.
