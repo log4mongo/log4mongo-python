@@ -1,21 +1,11 @@
 import datetime as dt
 import logging
 
-try:
-    from pymongo import MongoClient as Connection
-except ImportError:
-    from pymongo import Connection
-
+from pymongo import MongoClient
 from pymongo.collection import Collection
-from pymongo.errors import OperationFailure, PyMongoError
-import pymongo
-if pymongo.version_tuple[0] >= 3:
-    from pymongo.errors import ServerSelectionTimeoutError
-    write_method = 'insert_one'
-    write_many_method = 'insert_many'
-else:
-    write_method = 'save'
-    write_many_method = 'insert'
+from pymongo.errors import OperationFailure
+from pymongo.errors import PyMongoError
+from pymongo.errors import ServerSelectionTimeoutError
 
 """
 Example format of generated bson document:
@@ -128,26 +118,14 @@ class MongoHandler(logging.Handler):
         if self.reuse and _connection:
             self.connection = _connection
         else:
-            if pymongo.version_tuple[0] < 3:
-                try:
-                    self.connection = Connection(host=self.host,
-                                                 port=self.port, **kwargs)
-                # pymongo >= 3.0 does not raise this error
-                except PyMongoError:
-                    if self.fail_silently:
-                        return
-                    else:
-                        raise
-            else:
-                self.connection = Connection(host=self.host, port=self.port,
-                                             **kwargs)
-                try:
-                    self.connection.is_primary
-                except ServerSelectionTimeoutError:
-                    if self.fail_silently:
-                        return
-                    else:
-                        raise
+            self.connection = MongoClient(host=self.host, port=self.port,
+                                          **kwargs)
+            try:
+                self.connection.is_primary
+            except ServerSelectionTimeoutError:
+                if self.fail_silently:
+                    return
+                raise
             _connection = self.connection
 
         self.db = self.connection[self.database_name]
@@ -183,7 +161,7 @@ class MongoHandler(logging.Handler):
         """Inserting new logging record to mongo database."""
         if self.collection is not None:
             try:
-                getattr(self.collection, write_method)(self.format(record))
+                self.collection.insert_one(self.format(record))
             except Exception:
                 if not self.fail_silently:
                     self.handleError(record)
@@ -292,7 +270,7 @@ class BufferedMongoHandler(MongoHandler):
             self.buffer_lock_acquire()
             try:
 
-                getattr(self.collection, write_many_method)(self.buffer)
+                self.collection.insert_many(self.buffer)
                 self.empty_buffer()
 
             except Exception as e:
