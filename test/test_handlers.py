@@ -1,16 +1,10 @@
-from log4mongo.handlers import (BufferedMongoHandler, MongoHandler,
-                                write_method, write_many_method)
+from log4mongo.handlers import BufferedMongoHandler
+from log4mongo.handlers import MongoHandler
+
 import log4mongo.handlers
-from pymongo.errors import PyMongoError
-import pymongo
-if pymongo.version_tuple[0] >= 3:
-    from pymongo.errors import ServerSelectionTimeoutError
+from pymongo.errors import ServerSelectionTimeoutError
 
-try:
-    from StringIO import StringIO
-except ImportError:
-    from io import StringIO
-
+from io import StringIO
 import unittest
 import logging
 import time
@@ -54,18 +48,11 @@ class TestMongoHandler(unittest.TestCase):
     def test_1_connect_failed(self):
         log4mongo.handlers._connection = None
         kwargs = {'connectTimeoutMS': 2000, 'serverselectiontimeoutms': 2000}
-        if pymongo.version_tuple[0] < 3:
-            with self.assertRaises(PyMongoError):
-                MongoHandler(host='unknow_host',
-                             database_name=self.database_name,
-                             collection=self.collection_name,
-                             **kwargs)
-        else:
-            with self.assertRaises(ServerSelectionTimeoutError):
-                MongoHandler(host='unknow_host',
-                             database_name=self.database_name,
-                             collection=self.collection_name,
-                             **kwargs)
+        with self.assertRaises(ServerSelectionTimeoutError):
+            MongoHandler(host='unknow_host',
+                         database_name=self.database_name,
+                         collection=self.collection_name,
+                         **kwargs)
 
     def test_connect_failed_silent(self):
         log4mongo.handlers._connection = None
