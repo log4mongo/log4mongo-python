@@ -1,15 +1,15 @@
-from log4mongo.handlers import BufferedMongoHandler
-from log4mongo.handlers import MongoHandler
-
-import log4mongo.handlers
-from pymongo.errors import ServerSelectionTimeoutError
-
 from io import StringIO
 import unittest
 import logging
 import time
 import sys
 import threading
+
+from pymongo.errors import ServerSelectionTimeoutError
+
+import log4mongo.handlers
+from log4mongo.handlers import BufferedMongoHandler
+from log4mongo.handlers import MongoHandler
 
 
 class TestMongoHandler(unittest.TestCase):
