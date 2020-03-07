@@ -1,5 +1,6 @@
 import datetime as dt
 import logging
+import threading
 
 from pymongo import MongoClient
 from pymongo.collection import Collection
@@ -215,7 +216,6 @@ class BufferedMongoHandler(MongoHandler):
             import atexit
             atexit.register(self.destroy)
 
-            import threading
             self._buffer_lock = threading.RLock()
 
             # call at interval function
