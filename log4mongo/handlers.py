@@ -244,27 +244,22 @@ class BufferedMongoHandler(MongoHandler):
     def add_to_buffer(self, record):
         """Add a formatted record to buffer."""
 
-        self.buffer_lock.acquire()
-
-        self.last_record = record
-        self.buffer.append(self.format(record))
-
-        self.buffer_lock.release()
+        with self.buffer_lock:
+            self.last_record = record
+            self.buffer.append(self.format(record))
 
     def flush_to_mongo(self):
         """Flush all records to mongo database."""
         if self.collection is not None and len(self.buffer) > 0:
-            self.buffer_lock.acquire()
-            try:
+            with self.buffer_lock:
+                try:
 
-                self.collection.insert_many(self.buffer)
-                self.empty_buffer()
+                    self.collection.insert_many(self.buffer)
+                    self.empty_buffer()
 
-            except Exception as e:
-                if not self.fail_silently:
-                    self.handleError(self.last_record) #handling the error on flush
-            finally:
-                self.buffer_lock.release()
+                except Exception as e:
+                    if not self.fail_silently:
+                        self.handleError(self.last_record) #handling the error on flush
 
     def empty_buffer(self):
         """Empty the buffer list."""
