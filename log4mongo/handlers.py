@@ -1,10 +1,10 @@
 import datetime as dt
 import logging
+import threading
 
 from pymongo import MongoClient
 from pymongo.collection import Collection
 from pymongo.errors import OperationFailure
-from pymongo.errors import PyMongoError
 from pymongo.errors import ServerSelectionTimeoutError
 
 """
@@ -205,7 +205,8 @@ class BufferedMongoHandler(MongoHandler):
         self.last_record = None #kept for handling the error on flush
         self.buffer_timer_thread = None
 
-        self._buffer_lock = None
+        self.buffer_lock = threading.RLock()
+
         self._timer_stopper = None
 
         # setup periodical flush
@@ -214,9 +215,6 @@ class BufferedMongoHandler(MongoHandler):
             # clean exit event
             import atexit
             atexit.register(self.destroy)
-
-            import threading
-            self._buffer_lock = threading.RLock()
 
             # call at interval function
             def call_repeatedly(interval, func, *args):
@@ -238,46 +236,23 @@ class BufferedMongoHandler(MongoHandler):
     def emit(self, record):
         """Inserting new logging record to buffer and flush if necessary."""
 
-        self.add_to_buffer(record)
+        with self.buffer_lock:
+            self.last_record = record
+            self.buffer.append(self.format(record))
 
         if len(self.buffer) >= self.buffer_size or record.levelno >= self.buffer_early_flush_level:
             self.flush_to_mongo()
-        return
-
-    def buffer_lock_acquire(self):
-        """Acquire lock on buffer (only if periodical flush is set)."""
-        if self._buffer_lock:
-            self._buffer_lock.acquire()
-
-    def buffer_lock_release(self):
-        """Release lock on buffer (only if periodical flush is set)."""
-        if self._buffer_lock:
-            self._buffer_lock.release()
-
-    def add_to_buffer(self, record):
-        """Add a formatted record to buffer."""
-
-        self.buffer_lock_acquire()
-
-        self.last_record = record
-        self.buffer.append(self.format(record))
-
-        self.buffer_lock_release()
 
     def flush_to_mongo(self):
         """Flush all records to mongo database."""
         if self.collection is not None and len(self.buffer) > 0:
-            self.buffer_lock_acquire()
-            try:
-
-                self.collection.insert_many(self.buffer)
-                self.empty_buffer()
-
-            except Exception as e:
-                if not self.fail_silently:
-                    self.handleError(self.last_record) #handling the error on flush
-            finally:
-                self.buffer_lock_release()
+            with self.buffer_lock:
+                try:
+                    self.collection.insert_many(self.buffer)
+                    self.empty_buffer()
+                except Exception:
+                    if not self.fail_silently:
+                        self.handleError(self.last_record) #handling the error on flush
 
     def empty_buffer(self):
         """Empty the buffer list."""
@@ -290,5 +265,3 @@ class BufferedMongoHandler(MongoHandler):
             self._timer_stopper()
         self.flush_to_mongo()
         self.close()
-
-
