@@ -205,7 +205,8 @@ class BufferedMongoHandler(MongoHandler):
         self.last_record = None #kept for handling the error on flush
         self.buffer_timer_thread = None
 
-        self._buffer_lock = None
+        self.buffer_lock = threading.RLock()
+
         self._timer_stopper = None
 
         # setup periodical flush
@@ -214,8 +215,6 @@ class BufferedMongoHandler(MongoHandler):
             # clean exit event
             import atexit
             atexit.register(self.destroy)
-
-            self._buffer_lock = threading.RLock()
 
             # call at interval function
             def call_repeatedly(interval, func, *args):
@@ -242,30 +241,20 @@ class BufferedMongoHandler(MongoHandler):
         if len(self.buffer) >= self.buffer_size or record.levelno >= self.buffer_early_flush_level:
             self.flush_to_mongo()
 
-    def buffer_lock_acquire(self):
-        """Acquire lock on buffer (only if periodical flush is set)."""
-        if self._buffer_lock:
-            self._buffer_lock.acquire()
-
-    def buffer_lock_release(self):
-        """Release lock on buffer (only if periodical flush is set)."""
-        if self._buffer_lock:
-            self._buffer_lock.release()
-
     def add_to_buffer(self, record):
         """Add a formatted record to buffer."""
 
-        self.buffer_lock_acquire()
+        self.buffer_lock.acquire()
 
         self.last_record = record
         self.buffer.append(self.format(record))
 
-        self.buffer_lock_release()
+        self.buffer_lock.release()
 
     def flush_to_mongo(self):
         """Flush all records to mongo database."""
         if self.collection is not None and len(self.buffer) > 0:
-            self.buffer_lock_acquire()
+            self.buffer_lock.acquire()
             try:
 
                 self.collection.insert_many(self.buffer)
@@ -275,7 +264,7 @@ class BufferedMongoHandler(MongoHandler):
                 if not self.fail_silently:
                     self.handleError(self.last_record) #handling the error on flush
             finally:
-                self.buffer_lock_release()
+                self.buffer_lock.release()
 
     def empty_buffer(self):
         """Empty the buffer list."""
