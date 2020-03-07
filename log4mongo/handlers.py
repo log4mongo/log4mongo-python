@@ -241,7 +241,6 @@ class BufferedMongoHandler(MongoHandler):
 
         if len(self.buffer) >= self.buffer_size or record.levelno >= self.buffer_early_flush_level:
             self.flush_to_mongo()
-        return
 
     def buffer_lock_acquire(self):
         """Acquire lock on buffer (only if periodical flush is set)."""
