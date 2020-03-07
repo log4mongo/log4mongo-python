@@ -248,11 +248,9 @@ class BufferedMongoHandler(MongoHandler):
         if self.collection is not None and len(self.buffer) > 0:
             with self.buffer_lock:
                 try:
-
                     self.collection.insert_many(self.buffer)
                     self.empty_buffer()
-
-                except Exception as e:
+                except Exception:
                     if not self.fail_silently:
                         self.handleError(self.last_record) #handling the error on flush
 
