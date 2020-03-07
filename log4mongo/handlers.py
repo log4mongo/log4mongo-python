@@ -236,17 +236,12 @@ class BufferedMongoHandler(MongoHandler):
     def emit(self, record):
         """Inserting new logging record to buffer and flush if necessary."""
 
-        self.add_to_buffer(record)
-
-        if len(self.buffer) >= self.buffer_size or record.levelno >= self.buffer_early_flush_level:
-            self.flush_to_mongo()
-
-    def add_to_buffer(self, record):
-        """Add a formatted record to buffer."""
-
         with self.buffer_lock:
             self.last_record = record
             self.buffer.append(self.format(record))
+
+        if len(self.buffer) >= self.buffer_size or record.levelno >= self.buffer_early_flush_level:
+            self.flush_to_mongo()
 
     def flush_to_mongo(self):
         """Flush all records to mongo database."""
