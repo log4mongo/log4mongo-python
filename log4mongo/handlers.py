@@ -290,5 +290,3 @@ class BufferedMongoHandler(MongoHandler):
             self._timer_stopper()
         self.flush_to_mongo()
         self.close()
-
-
