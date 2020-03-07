@@ -5,7 +5,6 @@ import threading
 from pymongo import MongoClient
 from pymongo.collection import Collection
 from pymongo.errors import OperationFailure
-from pymongo.errors import PyMongoError
 from pymongo.errors import ServerSelectionTimeoutError
 
 """
