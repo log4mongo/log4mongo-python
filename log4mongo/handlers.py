@@ -246,23 +246,14 @@ class BufferedMongoHandler(MongoHandler):
 
     def flush_to_mongo(self):
         """Flush all records to mongo database."""
-
-        # we have to acquire buffer lock already for the check. otherwise, its state can change
-        with self.buffer_lock:
-            if self.collection is not None and len(self.buffer) > 0:
+        if self.collection is not None and len(self.buffer) > 0:
+            with self.buffer_lock:
                 try:
                     self.collection.insert_many(self.buffer)
                     self.empty_buffer()
-                except Exception as _:
-                    # try to insert one-by-one and catch exception. this is from MH
-                    for msg in self.buffer:
-                        try:
-                            self.collection.insert_one(msg)
-                        except Exception as _:
-                            if msg['levelname'] != 'DEBUG':
-                                print(f'flush_to_mongo failed with\n{msg}')
-                    # clear buffer now
-                    self.empty_buffer()
+                except Exception:
+                    if not self.fail_silently:
+                        self.handleError(self.last_record) #handling the error on flush
 
     def empty_buffer(self):
         """Empty the buffer list."""
