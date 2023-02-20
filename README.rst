@@ -7,8 +7,8 @@ log4mongo-python is using pymongo driver - http://github.com/mongodb/mongo-pytho
 Requirements
 ------------
 
-- python 3.6+
-- pymongo 3.9+
+- python 3.6.2+
+- pymongo 4.0+
 - mongo database
 
 For more information see *debian_requirements.txt* and *requirements.txt* files.
