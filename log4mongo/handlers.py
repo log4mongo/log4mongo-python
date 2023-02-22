@@ -119,6 +119,9 @@ class MongoHandler(logging.Handler):
             self.connection = _connection
         else:
             self.connection = MongoClient(host=self.host, port=self.port,
+                                          username=self.username,
+                                          password=self.password,
+                                          authSource=self.authentication_database_name,
                                           **kwargs)
             try:
                 self.connection.is_primary
@@ -131,8 +134,7 @@ class MongoHandler(logging.Handler):
         self.db = self.connection[self.database_name]
         if self.username is not None and self.password is not None:
             auth_db = self.connection[self.authentication_database_name]
-            self.authenticated = auth_db.authenticate(self.username,
-                                                      self.password)
+            self.authenticated = auth_db is not None
 
         if self.capped:
             #
@@ -153,10 +155,9 @@ class MongoHandler(logging.Handler):
         If authenticated, logging out and closing mongo database connection.
         """
         if self.authenticated:
-            self.db.logout()
-        if self.connection is not None:
-            self.connection.close()
-
+            self.db = None
+            self.collection = None
+            self. authenticated = False
     def emit(self, record):
         """Inserting new logging record to mongo database."""
         if self.collection is not None:
@@ -240,7 +241,7 @@ class BufferedMongoHandler(MongoHandler):
             self.last_record = record
             self.buffer.append(self.format(record))
 
-        if len(self.buffer) >= self.buffer_size or record.levelno >= self.buffer_early_flush_level:
+        if len(self.buffer) >= self.buffer_size or record.levelno >= getattr(logging, self.buffer_early_flush_level):
             self.flush_to_mongo()
 
     def flush_to_mongo(self):
