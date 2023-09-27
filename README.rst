@@ -147,7 +147,7 @@ Original Author
 | email: vladimir.gorej@gmail.com
 | web: https://www.linkedin.com/in/vladimirgorej/
 
-Current Maitainer
+Current Maintainer
 -----------------
 | Oz Nahum Tiram
 | email: nahumoz@gmail.com
