@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=67.0.0", "wheel", "setuptools_scm[toml]>=6.2"]
+
+[project]
+name = "log4mongo-python"
+dynamic = ["version"]
+authors = [
+  {name = "Oz N Tiram", email = "oz.tiram@gmail.com"},
+  {name = "Valdimir Goeje", email = "vladimir.gorej@gmail.com"}
+]
+readme = "README.md"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Intended Audience :: System Administrators",
+    "Environment :: Console",
+    "Environment :: Web Environment",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: BSD License",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development",
+]
+
+[tool.setuptools]
+packages = ["log4mongo"]
+
+[project.urls]
+homepage = "https://github.com/log4mongo/log4mongo-python"
+
+[tool.setuptools_scm]
+write_to = "log4mongo/_version.py"
