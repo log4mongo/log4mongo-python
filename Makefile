@@ -8,7 +8,6 @@ ifndef target
 	@(which mh > /dev/null 2>&1 && echo -e "\nUse \`make help target=foo\` to learn more about foo.")
 endif
 
-	
 .PHONY: build-sdist
 build-sdist:  ## Build source distribution
 	python3 -m build -s
@@ -20,8 +19,13 @@ build-wheel:  ## Build wheel distribution (and source distribution)
 .PHONY: build-clean
 build-clean:  ## Clean build artifacts
 	rm -rf dist
+	rm -rf log4mongo_python.egg-info/
+
+.PHONY: build-check
+build-check:  ## Check build artifacts
+	twine check dist/*
 
 .PHONY: build-pypi-publish
-build-pypi-publish:  ## Publish to PyPI
+build-pypi-publish:  build-check ## Publish to PyPI
 	python3 -m twine upload dist/*
 
