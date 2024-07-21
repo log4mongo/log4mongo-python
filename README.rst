@@ -148,10 +148,10 @@ Original Author
 | web: https://www.linkedin.com/in/vladimirgorej/
 
 Current Maintainer
------------------
+------------------
 | Oz Nahum Tiram
-| email: nahumoz@gmail.com
-| web: oz123.github.io
+| email: oz.tiram@gmail.com
+| web: https://oz123.github.io
 
 References
 ----------
