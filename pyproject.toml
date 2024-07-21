@@ -8,7 +8,7 @@ authors = [
   {name = "Oz N Tiram", email = "oz.tiram@gmail.com"},
   {name = "Valdimir Goeje", email = "vladimir.gorej@gmail.com"}
 ]
-readme = "README.md"
+readme = "README.rst"
 description = "Python logging handler for MongoDB"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
