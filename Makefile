@@ -17,6 +17,11 @@ build-sdist:  ## Build source distribution
 build-wheel:  ## Build wheel distribution (and source distribution)
 	python3 -m build -w
 
+.PHONY: build-clean
 build-clean:  ## Clean build artifacts
 	rm -rf dist
+
+.PHONY: build-pypi-publish
+build-pypi-publish:  ## Publish to PyPI
+	python3 -m twine upload dist/*
 
