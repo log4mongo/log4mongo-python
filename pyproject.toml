@@ -2,13 +2,14 @@
 requires = ["setuptools>=67.0.0", "wheel", "setuptools_scm[toml]>=6.2"]
 
 [project]
-name = "log4mongo-python"
+name = "log4mongo"
 dynamic = ["version"]
 authors = [
   {name = "Oz N Tiram", email = "oz.tiram@gmail.com"},
   {name = "Valdimir Goeje", email = "vladimir.gorej@gmail.com"}
 ]
 readme = "README.md"
+description = "Python logging handler for MongoDB"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Programming Language :: Python",
